@@ -9,32 +9,26 @@
 import { IDL } from '@icp-sdk/core/candid';
 
 export const SiteConfig = IDL.Record({
-  'baseUrl' : IDL.Text,
   'inviteCode' : IDL.Text,
   'registrationLink' : IDL.Text,
 });
 
 export const idlService = IDL.Service({
   'getConfig' : IDL.Func([], [SiteConfig], ['query']),
-  'getVisitorCount' : IDL.Func([], [IDL.Nat], ['query']),
-  'incrementVisitorCount' : IDL.Func([], [], []),
-  'setConfig' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [], []),
+  'incrementVisitorCount' : IDL.Func([], [IDL.Nat], []),
 });
 
 export const idlInitArgs = [];
 
 export const idlFactory = ({ IDL }) => {
   const SiteConfig = IDL.Record({
-    'baseUrl' : IDL.Text,
     'inviteCode' : IDL.Text,
     'registrationLink' : IDL.Text,
   });
   
   return IDL.Service({
     'getConfig' : IDL.Func([], [SiteConfig], ['query']),
-    'getVisitorCount' : IDL.Func([], [IDL.Nat], ['query']),
-    'incrementVisitorCount' : IDL.Func([], [], []),
-    'setConfig' : IDL.Func([IDL.Text, IDL.Text, IDL.Text], [], []),
+    'incrementVisitorCount' : IDL.Func([], [IDL.Nat], []),
   });
 };
 

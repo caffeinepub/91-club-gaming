@@ -11,15 +11,12 @@ import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
 export interface SiteConfig {
-  'baseUrl' : string,
   'inviteCode' : string,
   'registrationLink' : string,
 }
 export interface _SERVICE {
   'getConfig' : ActorMethod<[], SiteConfig>,
-  'getVisitorCount' : ActorMethod<[], bigint>,
-  'incrementVisitorCount' : ActorMethod<[], undefined>,
-  'setConfig' : ActorMethod<[string, string, string], undefined>,
+  'incrementVisitorCount' : ActorMethod<[], bigint>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

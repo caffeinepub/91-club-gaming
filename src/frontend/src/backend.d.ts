@@ -8,13 +8,10 @@ export interface None {
 }
 export type Option<T> = Some<T> | None;
 export interface SiteConfig {
-    baseUrl: string;
     inviteCode: string;
     registrationLink: string;
 }
 export interface backendInterface {
     getConfig(): Promise<SiteConfig>;
-    getVisitorCount(): Promise<bigint>;
-    incrementVisitorCount(): Promise<void>;
-    setConfig(baseUrl: string, inviteCode: string, registrationLink: string): Promise<void>;
+    incrementVisitorCount(): Promise<bigint>;
 }

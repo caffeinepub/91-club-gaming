@@ -90,15 +90,12 @@ export class ExternalBlob {
     }
 }
 export interface SiteConfig {
-    baseUrl: string;
     inviteCode: string;
     registrationLink: string;
 }
 export interface backendInterface {
     getConfig(): Promise<SiteConfig>;
-    getVisitorCount(): Promise<bigint>;
-    incrementVisitorCount(): Promise<void>;
-    setConfig(baseUrl: string, inviteCode: string, registrationLink: string): Promise<void>;
+    incrementVisitorCount(): Promise<bigint>;
 }
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
@@ -116,21 +113,7 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async getVisitorCount(): Promise<bigint> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getVisitorCount();
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getVisitorCount();
-            return result;
-        }
-    }
-    async incrementVisitorCount(): Promise<void> {
+    async incrementVisitorCount(): Promise<bigint> {
         if (this.processError) {
             try {
                 const result = await this.actor.incrementVisitorCount();
@@ -141,20 +124,6 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.incrementVisitorCount();
-            return result;
-        }
-    }
-    async setConfig(arg0: string, arg1: string, arg2: string): Promise<void> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.setConfig(arg0, arg1, arg2);
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.setConfig(arg0, arg1, arg2);
             return result;
         }
     }

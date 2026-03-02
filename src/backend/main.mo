@@ -1,42 +1,23 @@
-import Text "mo:core/Text";
-import Runtime "mo:core/Runtime";
-import Nat "mo:core/Nat";
+import Migration "migration";
 
+(with migration = Migration.run)
 actor {
   type SiteConfig = {
-    baseUrl : Text;
     inviteCode : Text;
     registrationLink : Text;
   };
 
-  var config : SiteConfig = {
-    baseUrl = "";
-    inviteCode = "";
-    registrationLink = "";
-  };
-
   var visitorCount = 0;
 
-  public shared ({ caller }) func setConfig(baseUrl : Text, inviteCode : Text, registrationLink : Text) : async () {
-    config := {
-      baseUrl;
-      inviteCode;
-      registrationLink;
-    };
-  };
-
-  public shared ({ caller }) func incrementVisitorCount() : async () {
+  public shared ({ caller }) func incrementVisitorCount() : async Nat {
     visitorCount += 1;
+    visitorCount;
   };
 
   public query ({ caller }) func getConfig() : async SiteConfig {
-    if (config.baseUrl == "" or config.inviteCode == "" or config.registrationLink == "") {
-      Runtime.trap("Config not set. Please set the config first.")
+    {
+      inviteCode = "2031355";
+      registrationLink = "https://dev.91club.in/auth";
     };
-    config;
-  };
-
-  public query ({ caller }) func getVisitorCount() : async Nat {
-    visitorCount;
   };
 };

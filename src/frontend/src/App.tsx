@@ -20,13 +20,10 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
-  useGetVisitorCount,
+  useGetConfig,
   useIncrementVisitorCount,
+  useVisitorCount,
 } from "./hooks/useQueries";
-
-const REGISTER_LINK =
-  "https://www.aajclub.com/#/register?invitationCode=13814651728";
-const INVITE_CODE = "13814651728";
 
 // ─── Particle Canvas ──────────────────────────────────────────────────────────
 function ParticleCanvas() {
@@ -133,9 +130,14 @@ function ParticleCanvas() {
 }
 
 // ─── Hero Section ─────────────────────────────────────────────────────────────
-function HeroSection() {
+function HeroSection({
+  registerLink,
+}: {
+  registerLink: string;
+}) {
   return (
     <section
+      id="hero"
       className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
       style={{
         background:
@@ -200,20 +202,21 @@ function HeroSection() {
         </h1>
 
         <p className="animate-fade-in-up-delay-2 font-heading text-2xl md:text-3xl lg:text-4xl mb-3 text-foreground/80 font-bold">
-          Join the Ultimate Gaming Experience
+          Join 91 Club - Win Big Every Day!
         </p>
 
         <p className="animate-fade-in-up-delay-2 font-body text-base md:text-lg mb-10 text-foreground/50 max-w-2xl mx-auto leading-relaxed">
-          Compete, win, and claim massive rewards on India's most trusted gaming
-          platform. Real money. Real prizes. Real excitement.
+          India's #1 Color Prediction Game. Real money. Real prizes. Real
+          excitement every single day.
         </p>
 
         {/* CTA Buttons */}
         <div className="animate-fade-in-up-delay-3 flex flex-col sm:flex-row gap-4 justify-center items-center">
           <a
-            href={REGISTER_LINK}
+            href={registerLink}
             target="_blank"
             rel="noopener noreferrer"
+            data-ocid="hero.primary_button"
             className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-heading font-bold text-lg btn-gold-glow animate-pulse-glow"
             style={{
               background:
@@ -272,19 +275,25 @@ function HeroSection() {
 }
 
 // ─── Invite Code Section ───────────────────────────────────────────────────────
-function InviteCodeSection() {
+function InviteCodeSection({
+  inviteCode,
+  registerLink,
+}: {
+  inviteCode: string;
+  registerLink: string;
+}) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(INVITE_CODE);
+      await navigator.clipboard.writeText(inviteCode);
       setCopied(true);
       toast.success("Invite code copied!", {
         description: "Paste it when registering for exclusive bonuses",
       });
       setTimeout(() => setCopied(false), 3000);
     } catch {
-      toast.error(`Could not copy. Code: ${INVITE_CODE}`);
+      toast.error(`Could not copy. Code: ${inviteCode}`);
     }
   };
 
@@ -350,12 +359,13 @@ function InviteCodeSection() {
                 className="font-mono text-3xl md:text-4xl font-bold tracking-wider"
                 style={{ color: "oklch(0.85 0.2 75)" }}
               >
-                {INVITE_CODE}
+                {inviteCode}
               </span>
             </div>
             <button
               type="button"
               onClick={handleCopy}
+              data-ocid="invite.copy_button"
               className="flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-xl font-body text-sm font-semibold transition-all duration-200 hover:scale-105 active:scale-95"
               style={{
                 background: copied
@@ -386,7 +396,7 @@ function InviteCodeSection() {
         </p>
 
         <a
-          href={REGISTER_LINK}
+          href={registerLink}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-heading font-bold text-base transition-all hover:scale-105"
@@ -408,33 +418,33 @@ function InviteCodeSection() {
 const features = [
   {
     icon: Trophy,
-    title: "Win Big Rewards",
+    title: "Daily Rewards",
     description:
-      "Compete in daily tournaments and weekly championships. Top players earn massive cash prizes and exclusive bonuses.",
+      "Earn daily rewards just for playing. New bonuses every day keep the excitement fresh and your wallet growing.",
     accent: "oklch(0.75 0.18 60)",
     bgAccent: "oklch(0.75 0.18 60 / 0.08)",
   },
   {
     icon: Zap,
-    title: "Daily Challenges",
+    title: "Fast Withdrawals",
     description:
-      "New challenges every day keep the excitement fresh. Complete missions to earn bonus coins and unlock premium rewards.",
+      "Withdraw your winnings instantly. No delays, no hidden fees. Money in your account within minutes of winning.",
     accent: "oklch(0.52 0.22 22)",
     bgAccent: "oklch(0.52 0.22 22 / 0.08)",
   },
   {
     icon: Shield,
-    title: "Trusted Platform",
+    title: "Secure Platform",
     description:
-      "Licensed and regulated. Over 10 million players trust 91 Club for a fair, transparent, and secure gaming experience.",
+      "Licensed and regulated. Over 10 million players trust 91 Club for a fair, transparent, and secure experience.",
     accent: "oklch(0.6 0.2 200)",
     bgAccent: "oklch(0.6 0.2 200 / 0.08)",
   },
   {
     icon: Rocket,
-    title: "Fast Payouts",
+    title: "24/7 Support",
     description:
-      "Withdraw your winnings instantly. No delays, no hidden fees. Money in your account within minutes.",
+      "Round-the-clock customer support to help you with any questions. Live chat, email, and phone available always.",
     accent: "oklch(0.68 0.18 145)",
     bgAccent: "oklch(0.68 0.18 145 / 0.08)",
   },
@@ -552,32 +562,38 @@ function FeaturesSection() {
 }
 
 // ─── How to Join Section ───────────────────────────────────────────────────────
-const steps = [
-  {
-    number: "01",
-    icon: ExternalLink,
-    title: "Click Register",
-    description:
-      'Tap the "Register Now" button and you\'ll be taken directly to the 91 Club registration page.',
-    action: { label: "Register Now →", href: REGISTER_LINK },
-  },
-  {
-    number: "02",
-    icon: Copy,
-    title: "Enter Invite Code",
-    description: `When prompted, enter the invite code: ${INVITE_CODE}. This unlocks your exclusive welcome bonus.`,
-    highlight: INVITE_CODE,
-  },
-  {
-    number: "03",
-    icon: DollarSign,
-    title: "Start Playing & Winning",
-    description:
-      "Make your first deposit, claim your bonus, and start competing in games to win real cash prizes!",
-  },
-];
+function HowToJoinSection({
+  inviteCode,
+  registerLink,
+}: {
+  inviteCode: string;
+  registerLink: string;
+}) {
+  const steps = [
+    {
+      number: "01",
+      icon: ExternalLink,
+      title: "Click Register",
+      description:
+        'Tap the "Register Now" button and you\'ll be taken directly to the 91 Club registration page.',
+      action: { label: "Register Now →", href: registerLink },
+    },
+    {
+      number: "02",
+      icon: Copy,
+      title: "Enter Invite Code",
+      description: `When prompted, enter the invite code: ${inviteCode}. This unlocks your exclusive welcome bonus.`,
+      highlight: inviteCode,
+    },
+    {
+      number: "03",
+      icon: DollarSign,
+      title: "Start Playing & Winning",
+      description:
+        "Make your first deposit, claim your bonus, and start competing in games to win real cash prizes!",
+    },
+  ];
 
-function HowToJoinSection() {
   return (
     <section
       id="how-to-join"
@@ -799,7 +815,13 @@ function TestimonialsSection() {
 }
 
 // ─── CTA Banner Section ────────────────────────────────────────────────────────
-function CTABannerSection() {
+function CTABannerSection({
+  inviteCode,
+  registerLink,
+}: {
+  inviteCode: string;
+  registerLink: string;
+}) {
   return (
     <section
       className="relative py-24 overflow-hidden"
@@ -845,16 +867,17 @@ function CTABannerSection() {
             className="font-mono font-bold"
             style={{ color: "oklch(0.85 0.2 75)" }}
           >
-            {INVITE_CODE}
+            {inviteCode}
           </span>{" "}
           for your exclusive welcome bonus.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <a
-            href={REGISTER_LINK}
+            href={registerLink}
             target="_blank"
             rel="noopener noreferrer"
+            data-ocid="cta.primary_button"
             className="inline-flex items-center justify-center gap-3 px-10 py-5 rounded-xl font-heading font-bold text-xl btn-gold-glow"
             style={{
               background:
@@ -877,7 +900,7 @@ function CTABannerSection() {
 }
 
 // ─── Header / Navbar ─────────────────────────────────────────────────────────
-function Header() {
+function Header({ registerLink }: { registerLink: string }) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -898,6 +921,7 @@ function Header() {
       <div className="container max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
         <a
           href="#hero"
+          data-ocid="nav.link"
           className="flex items-center gap-2 font-heading text-xl font-bold"
           style={{ color: "oklch(0.75 0.18 60)" }}
         >
@@ -918,6 +942,7 @@ function Header() {
             <a
               key={link.label}
               href={link.href}
+              data-ocid="nav.link"
               className="font-body text-sm text-foreground/60 hover:text-foreground transition-colors"
             >
               {link.label}
@@ -926,9 +951,10 @@ function Header() {
         </nav>
 
         <a
-          href={REGISTER_LINK}
+          href={registerLink}
           target="_blank"
           rel="noopener noreferrer"
+          data-ocid="nav.primary_button"
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-heading font-bold text-sm btn-gold-glow"
           style={{
             background:
@@ -944,7 +970,15 @@ function Header() {
 }
 
 // ─── Footer ───────────────────────────────────────────────────────────────────
-function Footer({ visitorCount }: { visitorCount?: bigint }) {
+function Footer({
+  visitorCount,
+  inviteCode,
+  registerLink,
+}: {
+  visitorCount?: bigint;
+  inviteCode: string;
+  registerLink: string;
+}) {
   const year = new Date().getFullYear();
   const hostname =
     typeof window !== "undefined" ? window.location.hostname : "";
@@ -989,7 +1023,7 @@ function Footer({ visitorCount }: { visitorCount?: bigint }) {
             </h4>
             <ul className="space-y-2">
               {[
-                { label: "Register Now", href: REGISTER_LINK, external: true },
+                { label: "Register Now", href: registerLink, external: true },
                 { label: "Features", href: "#features", external: false },
                 {
                   label: "How to Join",
@@ -1027,7 +1061,7 @@ function Footer({ visitorCount }: { visitorCount?: bigint }) {
                 border: "1px solid oklch(0.75 0.18 60 / 0.25)",
               }}
             >
-              {INVITE_CODE}
+              {inviteCode}
             </div>
             <p className="font-body text-xs text-foreground/35 mt-2">
               Use when registering for bonuses
@@ -1073,28 +1107,41 @@ function Footer({ visitorCount }: { visitorCount?: bigint }) {
 
 // ─── App Root ─────────────────────────────────────────────────────────────────
 export default function App() {
-  const { data: visitorCount } = useGetVisitorCount();
+  const { data: config } = useGetConfig();
+  const { data: visitorCount } = useVisitorCount();
   const { mutate: incrementCount } = useIncrementVisitorCount();
 
   useEffect(() => {
     incrementCount();
   }, [incrementCount]);
 
+  const inviteCode = config?.inviteCode ?? "13814651728";
+  const registerLink =
+    config?.registrationLink ??
+    "https://www.aajclub.com/#/register?invitationCode=13814651728";
+
   return (
     <div
       className="min-h-screen"
       style={{ background: "oklch(0.08 0.015 265)" }}
     >
-      <Header />
+      <Header registerLink={registerLink} />
       <main>
-        <HeroSection />
-        <InviteCodeSection />
+        <HeroSection registerLink={registerLink} />
+        <InviteCodeSection
+          inviteCode={inviteCode}
+          registerLink={registerLink}
+        />
         <FeaturesSection />
-        <HowToJoinSection />
+        <HowToJoinSection inviteCode={inviteCode} registerLink={registerLink} />
         <TestimonialsSection />
-        <CTABannerSection />
+        <CTABannerSection inviteCode={inviteCode} registerLink={registerLink} />
       </main>
-      <Footer visitorCount={visitorCount} />
+      <Footer
+        visitorCount={visitorCount}
+        inviteCode={inviteCode}
+        registerLink={registerLink}
+      />
       <Toaster
         theme="dark"
         toastOptions={{

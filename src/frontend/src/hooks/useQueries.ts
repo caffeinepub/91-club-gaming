@@ -9,7 +9,6 @@ export function useGetConfig() {
     queryFn: async () => {
       if (!actor) {
         return {
-          baseUrl: "https://www.aajclub.com",
           inviteCode: "13814651728",
           registrationLink:
             "https://www.aajclub.com/#/register?invitationCode=13814651728",
@@ -22,29 +21,27 @@ export function useGetConfig() {
   });
 }
 
-export function useGetVisitorCount() {
-  const { actor, isFetching } = useActor();
-  return useQuery<bigint>({
-    queryKey: ["visitorCount"],
-    queryFn: async () => {
-      if (!actor) return BigInt(0);
-      return actor.getVisitorCount();
-    },
-    enabled: !!actor && !isFetching,
-    staleTime: 1000 * 30,
-  });
-}
-
 export function useIncrementVisitorCount() {
   const { actor } = useActor();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async () => {
-      if (!actor) return;
-      await actor.incrementVisitorCount();
+      if (!actor) return BigInt(0);
+      return actor.incrementVisitorCount();
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["visitorCount"] });
+    onSuccess: (data) => {
+      if (data !== undefined && data !== null) {
+        queryClient.setQueryData(["visitorCount"], data);
+      }
     },
+  });
+}
+
+export function useVisitorCount() {
+  return useQuery<bigint>({
+    queryKey: ["visitorCount"],
+    queryFn: () => BigInt(0),
+    enabled: false,
+    staleTime: Number.POSITIVE_INFINITY,
   });
 }
